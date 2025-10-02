@@ -146,6 +146,9 @@ Thumbs.db
 # Supabase
 .supabase/
 
+# Local data and tokens
+.data/
+
 # Vercel
 .vercel
 
