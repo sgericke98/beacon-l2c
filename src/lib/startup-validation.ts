@@ -3,8 +3,11 @@
  * This runs when the Next.js server starts
  */
 
-// Only run validation on server side and not during build
-if (typeof window === 'undefined' && process.env.NODE_ENV !== 'production') {
+// Only run validation on server side, not during build, and not on Vercel build
+const isBuildMode = process.env.NODE_ENV === 'production' && process.env.VERCEL === '1';
+const isDevelopment = process.env.NODE_ENV === 'development';
+
+if (typeof window === 'undefined' && !isBuildMode && isDevelopment) {
   try {
     // Import and run environment validation
     const { validateEnvironment, printEnvironmentStatus } = require('./validate-env');
@@ -19,9 +22,7 @@ if (typeof window === 'undefined' && process.env.NODE_ENV !== 'production') {
     console.error('❌ Failed to validate environment during startup:', error);
     
     // Only exit in development if environment is invalid
-    if (process.env.NODE_ENV === 'development') {
-      console.error('💥 Exiting due to environment validation failure in development');
-      process.exit(1);
-    }
+    console.error('💥 Exiting due to environment validation failure in development');
+    process.exit(1);
   }
 }
