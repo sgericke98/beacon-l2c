@@ -2,6 +2,9 @@ import { z } from 'zod';
 
 // Environment variable validation schema
 const envSchema = z.object({
+  // App Configuration
+  NEXT_PUBLIC_APP_URL: z.string().url('Invalid app URL').optional(),
+  
   // Supabase Configuration
   NEXT_PUBLIC_SUPABASE_URL: z.string().url('Invalid Supabase URL'),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1, 'Supabase anon key is required'),

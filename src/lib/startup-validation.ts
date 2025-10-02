@@ -3,8 +3,8 @@
  * This runs when the Next.js server starts
  */
 
-// Only run validation on server side
-if (typeof window === 'undefined') {
+// Only run validation on server side and not during build
+if (typeof window === 'undefined' && process.env.NODE_ENV !== 'production') {
   try {
     // Import and run environment validation
     const { validateEnvironment, printEnvironmentStatus } = require('./validate-env');
@@ -18,9 +18,9 @@ if (typeof window === 'undefined') {
   } catch (error) {
     console.error('❌ Failed to validate environment during startup:', error);
     
-    // In production, we want to fail fast if environment is invalid
-    if (process.env.NODE_ENV === 'production') {
-      console.error('💥 Exiting due to environment validation failure');
+    // Only exit in development if environment is invalid
+    if (process.env.NODE_ENV === 'development') {
+      console.error('💥 Exiting due to environment validation failure in development');
       process.exit(1);
     }
   }
