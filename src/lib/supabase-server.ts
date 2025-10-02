@@ -4,8 +4,8 @@ import { env } from './env';
 
 // Server-side Supabase client for API routes
 // Uses validated environment variables for better security
-const supabaseUrl = env.SUPABASE_URL;
-const supabaseServiceKey = env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseUrl = env.SUPABASE_URL || process.env.SUPABASE_URL || '';
+const supabaseServiceKey = env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 // Create server client with service role key for elevated permissions
 export const supabaseServer = createClient<Database>(supabaseUrl, supabaseServiceKey, {

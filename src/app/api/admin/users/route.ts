@@ -25,7 +25,21 @@ async function getUsers(request: NextRequest, context: AuthContext) {
     // Get user details from auth.users for each member
     const transformedUsers = await Promise.all(
       (members || []).map(async (member) => {
-        const { data: userData } = await context.supabase.auth.admin.getUserById(member.user_id!);
+        // Type guard to ensure member has the required properties
+        if (!member || typeof member !== 'object' || !('user_id' in member)) {
+          console.error('Invalid member data:', member);
+          return {
+            id: 'unknown',
+            email: 'Unknown',
+            full_name: 'Unknown',
+            role: 'unknown',
+            is_active: false,
+            joined_at: null,
+            created_at: null
+          };
+        }
+
+        const { data: userData } = await context.supabase.auth.admin.getUserById(member.user_id as string);
         
         return {
           id: member.user_id,
@@ -84,10 +98,10 @@ async function createUser(request: NextRequest, context: AuthContext) {
     const { data: currentUserOrg, error: orgError } = await context.supabase
       .from('organization_members')
       .select('organization_id')
-      .eq('user_id', context.user.id)
+      .eq('user_id', context.user.id as any)
       .single();
 
-    if (orgError || !currentUserOrg) {
+    if (orgError || !currentUserOrg || !('organization_id' in currentUserOrg)) {
       console.error('Error getting user organization:', orgError);
       return NextResponse.json(
         { error: 'Failed to get organization', message: 'User not associated with any organization' },
@@ -103,7 +117,7 @@ async function createUser(request: NextRequest, context: AuthContext) {
         organization_id: currentUserOrg.organization_id,
         member_role: role,
         member_is_active: true
-      })
+      } as any)
       .select()
       .single();
 

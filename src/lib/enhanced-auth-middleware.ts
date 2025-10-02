@@ -5,7 +5,10 @@ import { env } from './env';
 import { AuthenticatedUser, AuthContext } from './auth-middleware';
 
 // Create a client for auth operations
-const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
+const supabase = createClient(
+  env.SUPABASE_URL || process.env.SUPABASE_URL || '',
+  env.SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || ''
+);
 
 export interface EnhancedAuthContext extends AuthContext {
   selectedOrganizationId?: string;
@@ -61,8 +64,8 @@ export async function authenticateRequestWithFilters(request: NextRequest): Prom
           organization_slug
         )
       `)
-      .eq('user_id', user.id)
-      .eq('member_is_active', true);
+      .eq('user_id' as any, user.id as any)
+      .eq('member_is_active' as any, true as any);
 
     if (memberError || !memberData || memberData.length === 0) {
       console.error('Member data error:', memberError);
@@ -81,8 +84,8 @@ export async function authenticateRequestWithFilters(request: NextRequest): Prom
           organization_slug
         )
       `)
-      .eq('user_id', user.id)
-      .eq('member_is_active', true);
+      .eq('user_id' as any, user.id as any)
+      .eq('member_is_active' as any, true as any);
 
     if (orgsError) {
       console.error('Organizations data error:', orgsError);
@@ -92,10 +95,10 @@ export async function authenticateRequestWithFilters(request: NextRequest): Prom
     // Use the first organization as default, or allow selection
     const primaryMember = memberData[0];
     const availableOrgs = allOrganizations?.map(org => ({
-      organization_id: org.organization_id || '',
-      organization_name: org.organizations.organization_name || '',
-      organization_slug: org.organizations.organization_slug || '',
-      member_role: org.member_role || 'member'
+      organization_id: (org as any).organization_id || '',
+      organization_name: (org as any).organizations?.organization_name || '',
+      organization_slug: (org as any).organizations?.organization_slug || '',
+      member_role: (org as any).member_role || 'member'
     })) || [];
 
     // Get user details from auth.users
@@ -111,13 +114,13 @@ export async function authenticateRequestWithFilters(request: NextRequest): Prom
                     'Unknown User';
 
     // Check if user is admin (can access all organizations)
-    const isAdmin = primaryMember.member_role === 'admin';
+    const isAdmin = (primaryMember as any).member_role === 'admin';
     const canAccessAllOrganizations = isAdmin;
 
     // Get selected organization from query params or headers
     const selectedOrgId = request.nextUrl.searchParams.get('organization_id') || 
                          request.headers.get('x-organization-id') ||
-                         primaryMember.organization_id;
+                         (primaryMember as any).organization_id;
 
     // Get selected user from query params or headers (for admin filtering)
     const selectedUserId = request.nextUrl.searchParams.get('user_id') || 
@@ -127,10 +130,10 @@ export async function authenticateRequestWithFilters(request: NextRequest): Prom
       user: {
         id: user.id,
         email: authData.user.email || 'unknown@example.com',
-        role: primaryMember.member_role || 'member',
+        role: (primaryMember as any).member_role || 'member',
         full_name: fullName,
-        organization_id: primaryMember.organization_id || undefined,
-        organization_name: primaryMember.organizations.organization_name || undefined,
+        organization_id: (primaryMember as any).organization_id || undefined,
+        organization_name: (primaryMember as any).organizations?.organization_name || undefined,
         available_organizations: availableOrgs
       },
       supabase: supabaseServer,

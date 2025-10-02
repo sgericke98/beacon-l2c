@@ -57,27 +57,27 @@ export async function POST(request: NextRequest) {
     let userPeriodDays = 30; // default
 
     // 1) Build the base filtered query ONCE
-    let base = supabase
+    let base = (supabase
       .from('mv_lead_to_cash_flow' as any)
-      .select(COLUMNS, { count: 'exact' });
+      .select(COLUMNS, { count: 'exact' }) as any);
 
     if (filters?.customerTier && filters.customerTier !== 'all') {
-      base = base.eq('customer_tier', filters.customerTier);
+      base = base.eq('customer_tier' as any, filters.customerTier as any);
     }
     if (filters?.productType && filters.productType !== 'all') {
-      base = base.eq('customer_market_segment', filters.productType);
+      base = base.eq('customer_market_segment' as any, filters.productType as any);
     }
     if (filters?.geolocation && filters.geolocation !== 'all') {
-      base = base.eq('customer_country', filters.geolocation);
+      base = base.eq('customer_country' as any, filters.geolocation as any);
     }
     if (filters?.stage && filters.stage !== 'all') {
-      base = base.eq('opportunity_stage_name', filters.stage);
+      base = base.eq('opportunity_stage_name' as any, filters.stage as any);
     }
     if (filters?.leadType && filters.leadType !== 'all') {
-      base = base.eq('opportunity_lead_source', filters.leadType);
+      base = base.eq('opportunity_lead_source' as any, filters.leadType as any);
     }
     if (filters?.customerType && filters.customerType !== 'all') {
-      base = base.eq('opportunity_type', filters.customerType);
+      base = base.eq('opportunity_type' as any, filters.customerType as any);
     }
     if (filters?.dateRange?.from) {
       base = base.gte('opportunity_created_date', filters.dateRange.from);

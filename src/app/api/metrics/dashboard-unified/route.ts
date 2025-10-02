@@ -59,30 +59,30 @@ async function handleDashboardRequest(request: NextRequest, context: EnhancedAut
     let userPeriodDays = 30; // default
 
     // 1) Build the base filtered query with organization awareness
-    let base = supabase
+    let base = (supabase
       .from('mv_lead_to_cash_flow' as any)
-      .select(COLUMNS, { count: 'exact' });
+      .select(COLUMNS, { count: 'exact' }) as any);
     
     // Apply organization filtering
     base = applyOrganizationFilterToQuery(base, context, { organization_id: context.selectedOrganizationId });
 
     if (filters?.customerTier && filters.customerTier !== 'all') {
-      base = base.eq('customer_tier', filters.customerTier);
+      base = base.eq('customer_tier' as any, filters.customerTier as any);
     }
     if (filters?.productType && filters.productType !== 'all') {
-      base = base.eq('customer_market_segment', filters.productType);
+      base = base.eq('customer_market_segment' as any, filters.productType as any);
     }
     if (filters?.geolocation && filters.geolocation !== 'all') {
-      base = base.eq('customer_country', filters.geolocation);
+      base = base.eq('customer_country' as any, filters.geolocation as any);
     }
     if (filters?.stage && filters.stage !== 'all') {
-      base = base.eq('opportunity_stage_name', filters.stage);
+      base = base.eq('opportunity_stage_name' as any, filters.stage as any);
     }
     if (filters?.leadType && filters.leadType !== 'all') {
-      base = base.eq('opportunity_lead_source', filters.leadType);
+      base = base.eq('opportunity_lead_source' as any, filters.leadType as any);
     }
     if (filters?.customerType && filters.customerType !== 'all') {
-      base = base.eq('opportunity_type', filters.customerType);
+      base = base.eq('opportunity_type' as any, filters.customerType as any);
     }
     if (filters?.dateRange?.from) {
       base = base.gte('opportunity_created_date', filters.dateRange.from);
@@ -133,31 +133,31 @@ async function handleDashboardRequest(request: NextRequest, context: EnhancedAut
     }
     
     // Build extended query for period comparisons with organization awareness
-    let extendedBase = supabase
+    let extendedBase = (supabase
       .from('mv_lead_to_cash_flow' as any)
-      .select(COLUMNS, { count: 'exact' });
+      .select(COLUMNS, { count: 'exact' }) as any);
     
     // Apply organization filtering
     extendedBase = applyOrganizationFilterToQuery(extendedBase, context, { organization_id: context.selectedOrganizationId });
 
     // Apply all the same filters except extend the date range backwards
-    if (filters?.customerTier && filters.customerTier !== 'all') {
-      extendedBase = extendedBase.eq('customer_tier', filters.customerTier);
-    }
-    if (filters?.productType && filters.productType !== 'all') {
-      extendedBase = extendedBase.eq('customer_market_segment', filters.productType);
-    }
-    if (filters?.geolocation && filters.geolocation !== 'all') {
-      extendedBase = extendedBase.eq('customer_country', filters.geolocation);
-    }
-    if (filters?.stage && filters.stage !== 'all') {
-      extendedBase = extendedBase.eq('opportunity_stage_name', filters.stage);
-    }
-    if (filters?.leadType && filters.leadType !== 'all') {
-      extendedBase = extendedBase.eq('opportunity_lead_source', filters.leadType);
-    }
-    if (filters?.customerType && filters.customerType !== 'all') {
-      extendedBase = extendedBase.eq('opportunity_type', filters.customerType);
+      if (filters?.customerTier && filters.customerTier !== 'all') {
+        extendedBase = extendedBase.eq('customer_tier' as any, filters.customerTier as any);
+      }
+      if (filters?.productType && filters.productType !== 'all') {
+        extendedBase = extendedBase.eq('customer_market_segment' as any, filters.productType as any);
+      }
+      if (filters?.geolocation && filters.geolocation !== 'all') {
+        extendedBase = extendedBase.eq('customer_country' as any, filters.geolocation as any);
+      }
+      if (filters?.stage && filters.stage !== 'all') {
+        extendedBase = extendedBase.eq('opportunity_stage_name' as any, filters.stage as any);
+      }
+      if (filters?.leadType && filters.leadType !== 'all') {
+        extendedBase = extendedBase.eq('opportunity_lead_source' as any, filters.leadType as any);
+      }
+      if (filters?.customerType && filters.customerType !== 'all') {
+        extendedBase = extendedBase.eq('opportunity_type' as any, filters.customerType as any);
     }
     if (extendedFromDate) {
       extendedBase = extendedBase.gte('opportunity_created_date', extendedFromDate.toISOString());

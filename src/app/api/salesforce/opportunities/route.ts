@@ -46,9 +46,9 @@ async function handleOpportunitiesGET(req: NextRequest, context: EnhancedAuthCon
     const region = searchParams.get("region");
 
     // Build the query using optimized materialized view with organization awareness
-    let query = context.supabase
+    let query = (context.supabase
       .from("mv_opportunities_with_usd" as any)
-      .select("*");
+      .select("*") as any);
     
     // Apply organization filtering
     query = applyOrganizationFilterToQuery(query, context, { organization_id: context.selectedOrganizationId });
@@ -64,16 +64,16 @@ async function handleOpportunitiesGET(req: NextRequest, context: EnhancedAuthCon
     // Apply region filter if provided
     if (region) {
       const regions = region.split(",");
-      query = query.in("customer_country", regions);
+      query = query.in("customer_country" as any, regions as any);
     }
 
     // Apply sorting
     query = query.order(sortBy, { ascending: sortDirection === "asc" });
 
     // Get total count first with organization awareness
-    const countQuery = context.supabase
+    const countQuery = (context.supabase
       .from("mv_opportunities_with_usd" as any)
-      .select("*", { count: "exact", head: true });
+      .select("*", { count: "exact", head: true }) as any);
     
     // Apply organization filtering
     applyOrganizationFilterToQuery(countQuery, context, { organization_id: context.selectedOrganizationId });
@@ -87,7 +87,7 @@ async function handleOpportunitiesGET(req: NextRequest, context: EnhancedAuthCon
     }
     if (region) {
       const regions = region.split(",");
-      countQuery.in("customer_country", regions);
+      countQuery.in("customer_country" as any, regions as any);
     }
 
     const { count, error: countError } = await executeQueryWithTimeout(countQuery);
@@ -152,9 +152,9 @@ async function handleOpportunitiesPOST(req: NextRequest, context: EnhancedAuthCo
     // }
 
     // Build the query using optimized materialized view with organization awareness
-    let query = context.supabase
+    let query = (context.supabase
       .from("mv_opportunities_with_usd" as any)
-      .select("*");
+      .select("*") as any);
     
     // Apply organization filtering
     query = applyOrganizationFilterToQuery(query, context, { organization_id: context.selectedOrganizationId });
@@ -169,32 +169,32 @@ async function handleOpportunitiesPOST(req: NextRequest, context: EnhancedAuthCo
 
     // Apply region filter if provided
     if (filters.region && filters.region.length > 0) {
-      query = query.in("customer_country", filters.region);
+      query = query.in("customer_country" as any, filters.region as any);
     }
 
     // Apply customer tier filter
     if (filters.customerTier && filters.customerTier.length > 0) {
-      query = query.in("customer_tier", filters.customerTier);
+      query = query.in("customer_tier" as any, filters.customerTier as any);
     }
 
     // Apply stage filter
     if (filters.stage && filters.stage.length > 0) {
-      query = query.in("opportunity_stage_name", filters.stage);
+      query = query.in("opportunity_stage_name" as any, filters.stage as any);
     }
 
     // Apply lead type filter
     if (filters.leadType && filters.leadType.length > 0) {
-      query = query.in("opportunity_lead_source", filters.leadType);
+      query = query.in("opportunity_lead_source" as any, filters.leadType as any);
     }
 
     // Apply product type filter (maps to `type`)
     if (filters.productType && filters.productType.length > 0) {
-      query = query.in("opportunity_type", filters.productType);
+      query = query.in("opportunity_type" as any, filters.productType as any);
     }
 
     // Apply customer type filter (maps to `market_segment`)
     if (filters.customerType && filters.customerType.length > 0) {
-      query = query.in("customer_market_segment", filters.customerType);
+      query = query.in("customer_market_segment" as any, filters.customerType as any);
     }
 
     // Apply simple search across key fields
@@ -212,9 +212,9 @@ async function handleOpportunitiesPOST(req: NextRequest, context: EnhancedAuthCo
     });
 
     // Get total count first with organization awareness
-    const countQuery = context.supabase
+    const countQuery = (context.supabase
       .from("mv_opportunities_with_usd" as any)
-      .select("*", { count: "exact", head: true });
+      .select("*", { count: "exact", head: true }) as any);
     
     // Apply organization filtering
     applyOrganizationFilterToQuery(countQuery, context, { organization_id: context.selectedOrganizationId });
@@ -227,22 +227,22 @@ async function handleOpportunitiesPOST(req: NextRequest, context: EnhancedAuthCo
       countQuery.lte("opportunity_created_date", filters.dateRange.to);
     }
     if (filters.region && filters.region.length > 0) {
-      countQuery.in("customer_country", filters.region);
+      countQuery.in("customer_country" as any, filters.region as any);
     }
     if (filters.customerTier && filters.customerTier.length > 0) {
-      countQuery.in("customer_tier", filters.customerTier);
+      countQuery.in("customer_tier" as any, filters.customerTier as any);
     }
     if (filters.stage && filters.stage.length > 0) {
-      countQuery.in("opportunity_stage_name", filters.stage);
+      countQuery.in("opportunity_stage_name" as any, filters.stage as any);
     }
     if (filters.leadType && filters.leadType.length > 0) {
-      countQuery.in("opportunity_lead_source", filters.leadType);
+      countQuery.in("opportunity_lead_source" as any, filters.leadType as any);
     }
     if (filters.productType && filters.productType.length > 0) {
-      countQuery.in("opportunity_type", filters.productType);
+      countQuery.in("opportunity_type" as any, filters.productType as any);
     }
     if (filters.customerType && filters.customerType.length > 0) {
-      countQuery.in("customer_market_segment", filters.customerType);
+      countQuery.in("customer_market_segment" as any, filters.customerType as any);
     }
     if (filters.searchText && filters.searchText.trim().length > 0) {
       const s = filters.searchText.trim();
