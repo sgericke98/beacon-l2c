@@ -21,6 +21,14 @@ interface Organization {
   member_role: string;
 }
 
+// Extended User type that includes organization information
+interface ExtendedUser {
+  id: string;
+  email?: string;
+  organization_id?: string;
+  available_organizations?: Organization[];
+}
+
 interface OrganizationSelectorProps {
   onOrganizationChange?: (organizationId: string) => void;
   className?: string;
@@ -31,14 +39,17 @@ export function OrganizationSelector({ onOrganizationChange, className }: Organi
   const [selectedOrgId, setSelectedOrgId] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
+  // Cast user to ExtendedUser type for organization properties
+  const extendedUser = user as ExtendedUser | null;
+
   // Initialize with user's primary organization
   useEffect(() => {
-    if (user?.organization_id) {
-      setSelectedOrgId(user.organization_id);
+    if (extendedUser?.organization_id) {
+      setSelectedOrgId(extendedUser.organization_id);
     }
-  }, [user?.organization_id]);
+  }, [extendedUser?.organization_id]);
 
-  const availableOrganizations = user?.available_organizations || [];
+  const availableOrganizations = extendedUser?.available_organizations || [];
   const currentOrganization = availableOrganizations.find(
     org => org.organization_id === selectedOrgId
   ) || availableOrganizations[0];

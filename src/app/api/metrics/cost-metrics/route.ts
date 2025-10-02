@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { z } from "zod";
 
+// Force dynamic rendering since we use request.url
+export const dynamic = 'force-dynamic';
+
 const RequestSchema = z.object({
   dateFrom: z.string().optional(),
   dateTo: z.string().optional(),

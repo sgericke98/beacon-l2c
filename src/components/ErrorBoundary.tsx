@@ -56,7 +56,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
     // Log error using the new error logger
     logErrorWithContext(error, {
-      componentStack: errorInfo.componentStack,
+      componentStack: errorInfo.componentStack || undefined,
       errorId,
       category: 'client'
     });

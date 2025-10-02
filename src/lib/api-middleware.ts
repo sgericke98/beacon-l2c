@@ -76,7 +76,7 @@ export function withValidatedApi<T>(
   config: Omit<ApiMiddlewareConfig, 'validation'>,
   handler: (request: NextRequest, validatedData: T) => Promise<NextResponse> | NextResponse
 ) {
-  return withApiMiddleware({ ...config, validation: schema }, handler);
+  return withApiMiddleware({ ...config, validation: schema }, handler as any);
 }
 
 // Validated convenience functions

@@ -1,7 +1,7 @@
 // Example implementations showing how to use the new middleware
 
 import { NextRequest, NextResponse } from 'next/server';
-import { withApiMiddleware, withValidatedAuthApi, withValidatedAdminApi } from './api-middleware';
+import { withApiMiddleware, withValidatedAuthApi, withValidatedAdminApi, withValidatedMetricsApi } from './api-middleware';
 import { schemas } from './validation-schemas';
 
 // Example 1: Simple API with CORS and rate limiting

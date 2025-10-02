@@ -44,7 +44,7 @@ async function logError(request: NextRequest, validatedData: typeof errorLogSche
       componentStack,
       timestamp: timestamp || new Date().toISOString(),
       url,
-      userAgent,
+      userAgent: userAgent || request.headers.get('user-agent') || 'unknown',
       userId,
       sessionId,
       severity,
@@ -52,8 +52,7 @@ async function logError(request: NextRequest, validatedData: typeof errorLogSche
       ip: request.headers.get('x-forwarded-for') || 
           request.headers.get('x-real-ip') || 
           request.headers.get('cf-connecting-ip') || 
-          'unknown',
-      userAgent: userAgent || request.headers.get('user-agent') || 'unknown'
+          'unknown'
     };
 
     // Log to console in development

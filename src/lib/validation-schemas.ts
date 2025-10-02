@@ -39,7 +39,7 @@ export const userSchemas = {
   createUser: z.object({
     email: z.string().email('Invalid email format'),
     full_name: z.string().min(1, 'Full name is required').max(100, 'Full name too long'),
-    role: z.enum(['admin', 'member', 'viewer']).default('member')
+    role: z.enum(['admin', 'member', 'viewer'])
   }),
 
   updateUser: z.object({

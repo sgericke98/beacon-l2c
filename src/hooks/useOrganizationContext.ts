@@ -3,6 +3,22 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 
+interface Organization {
+  organization_id: string;
+  organization_name: string;
+  organization_slug: string;
+  member_role: string;
+}
+
+// Extended User type that includes organization information
+interface ExtendedUser {
+  id: string;
+  email?: string;
+  organization_id?: string;
+  organization_name?: string;
+  available_organizations?: Organization[];
+}
+
 interface OrganizationContext {
   selectedOrganizationId: string | null;
   selectedOrganizationName: string | null;
@@ -16,34 +32,37 @@ export function useOrganizationContext(): OrganizationContext {
   const [selectedOrganizationId, setSelectedOrganizationId] = useState<string | null>(null);
   const [selectedOrganizationName, setSelectedOrganizationName] = useState<string | null>(null);
 
+  // Cast user to ExtendedUser type for organization properties
+  const extendedUser = user as ExtendedUser | null;
+
   // Initialize with user's primary organization
   useEffect(() => {
-    if (user?.organization_id) {
-      setSelectedOrganizationId(user.organization_id);
-      setSelectedOrganizationName(user.organization_name || null);
+    if (extendedUser?.organization_id) {
+      setSelectedOrganizationId(extendedUser.organization_id);
+      setSelectedOrganizationName(extendedUser.organization_name || null);
     }
-  }, [user?.organization_id, user?.organization_name]);
+  }, [extendedUser?.organization_id, extendedUser?.organization_name]);
 
   // Load persisted organization selection
   useEffect(() => {
     const persistedOrgId = localStorage.getItem('selectedOrganizationId');
-    if (persistedOrgId && user?.available_organizations) {
-      const org = user.available_organizations.find(o => o.organization_id === persistedOrgId);
+    if (persistedOrgId && extendedUser?.available_organizations) {
+      const org = extendedUser.available_organizations.find(o => o.organization_id === persistedOrgId);
       if (org) {
         setSelectedOrganizationId(org.organization_id);
         setSelectedOrganizationName(org.organization_name);
       }
     }
-  }, [user?.available_organizations]);
+  }, [extendedUser?.available_organizations]);
 
   const switchOrganization = useCallback((organizationId: string) => {
-    const org = user?.available_organizations?.find(o => o.organization_id === organizationId);
+    const org = extendedUser?.available_organizations?.find(o => o.organization_id === organizationId);
     if (org) {
       setSelectedOrganizationId(org.organization_id);
       setSelectedOrganizationName(org.organization_name);
       localStorage.setItem('selectedOrganizationId', organizationId);
     }
-  }, [user?.available_organizations]);
+  }, [extendedUser?.available_organizations]);
 
   const getOrganizationHeaders = useCallback(() => {
     const headers: Record<string, string> = {};
